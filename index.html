@@ -29,10 +29,7 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
 <header><div class="brand">♛ GRANDMASTER <span>ARENA</span></div><div class="tag">THE BOARD IS YOURS</div></header>
 <main>
 <section class="panel">
- <div class="status"><div><div class="turn" id="status">White to move</div><div class="tag" id="substatus">Choose a piece to begin</div></div><div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
- <div class="clock" id="clock"><span id="myClockLabel" style="display:none;font-size:10px;color:var(--muted);font-weight:700">YOU</span><span id="myClockValue">10:00</span></div>
- <div class="clock" id="opponentClock" style="display:none;border:1px solid #ffffff22"><span id="opponentClockLabel" style="display:block;font-size:10px;color:var(--muted);font-weight:700">OPPONENT</span><span id="opponentClockValue">10:00</span></div>
-</div></div>
+ <div class="status"><div><div class="turn" id="status">White to move</div><div class="tag" id="substatus">Choose a piece to begin</div></div><div class="clock" id="clock">10:00</div></div>
  <div class="board" id="board" aria-label="Chess board"></div>
  <div class="controls">
   <button class="btn primary" id="new">New game</button><button class="btn" id="undo">Undo</button><button class="btn" id="flip">Flip board</button><button class="btn" id="hint">Hint</button>
@@ -116,4 +113,535 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
 </main><footer>GRANDMASTER ARENA · free browser chess · v1.0</footer>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
 <script>
-(()=>{try{eval(atob("CigoKSA9PiB7CiBjb25zdCAkPWlkPT5kb2N1bWVudC5nZXRFbGVtZW50QnlJZChpZCk7CiBpZih0eXBlb2YgQ2hlc3M9PT0idW5kZWZpbmVkIil7CiAgY29uc3QgYm9hcmQ9JCgiYm9hcmQiKTsKICBib2FyZC5zdHlsZS5kaXNwbGF5PSJncmlkIjsKICBib2FyZC5pbm5lckhUTUw9JzxkaXYgc3R5bGU9ImdyaWQtY29sdW1uOjEvLTE7ZGlzcGxheTpncmlkO3BsYWNlLWl0ZW1zOmNlbnRlcjtwYWRkaW5nOjI4cHg7dGV4dC1hbGlnbjpjZW50ZXI7Y29sb3I6I2Y0ZjBlOCI+IDxkaXY+PGRpdiBzdHlsZT0iZm9udC1zaXplOjQycHgiPuKZn++4jzwvZGl2PjxiPkNoZXNzIHJ1bGVzIGxpYnJhcnkgZGlkIG5vdCBsb2FkPC9iPjxwIHN0eWxlPSJjb2xvcjojYWFiNGM0O2ZvbnQtc2l6ZToxM3B4Ij5QbGVhc2Ugb3BlbiB0aGlzIEhUTUwgZmlsZSBpbiBDaHJvbWUgd2l0aCBhbiBpbnRlcm5ldCBjb25uZWN0aW9uLCB0aGVuIHJlZnJlc2guPC9wPjwvZGl2PjwvZGl2Pic7CiAgJCgic3RhdHVzIikudGV4dENvbnRlbnQ9IlVuYWJsZSB0byBzdGFydCBjaGVzcyI7CiAgJCgic3Vic3RhdHVzIikudGV4dENvbnRlbnQ9IkludGVybmV0IGNvbm5lY3Rpb24gcmVxdWlyZWQiOwogIHJldHVybjsKIH0KIGNvbnN0IGdhbWU9bmV3IENoZXNzKCk7CiBjb25zdCBnbHlwaD17dzp7azoi4pmUIixxOiLimZUiLHI6IuKZliIsYjoi4pmXIixuOiLimZgiLHA6IuKZmSJ9LGI6e2s6IuKZmiIscToi4pmbIixyOiLimZwiLGI6IuKZnSIsbjoi4pmeIixwOiLimZ8ifX07CiBsZXQgc2VsZWN0ZWQ9bnVsbCwgbGVnYWw9W10sIGZsaXBwZWQ9ZmFsc2UsIGxhc3Q9bnVsbCwgc2Vjb25kcz02MDAsIHRpbWVyPW51bGwsIHRoaW5raW5nPWZhbHNlLCBjYXB0dXJlZFc9W10sY2FwdHVyZWRCPVtdLG1hdGNoRmluaXNoZWQ9ZmFsc2UsZW5naW5lVGltZXI9bnVsbCxlbmdpbmVCdXN5PWZhbHNlLGVuZ2luZVdvcmtlcj1udWxsLHJldmlld0hpc3Rvcnk9W107CiBsZXQgb25saW5lTW9kZT1mYWxzZSxteU9ubGluZUNvbG9yPW51bGwsb25saW5lUm9vbUNvZGU9bnVsbCxvbmxpbmVEYj1udWxsLG9ubGluZVJvb21SZWY9bnVsbCxvbmxpbmVVbnN1YnNjcmliZT1udWxsLG9ubGluZUJ1c3k9ZmFsc2Usb25saW5lTGFzdEZlbj0iIjsKIGxldCBvbmxpbmVDbG9ja3M9e3c6NjAwMDAwLGI6NjAwMDAwLHR1cm46InciLHN0YXJ0ZWRBdDowLGZpbmlzaGVkOmZhbHNlfTsKIGNvbnN0IGZpbGVzPSJhYmNkZWZnaCI7CiBjb25zdCBQUk9GSUxFX0tFWT0iZ3JhbmRtYXN0ZXJBcmVuYVByb2ZpbGVWMSI7CiBjb25zdCByYW5rTGV2ZWxzPVsKICB7bmFtZToiQnJvbnplIixtaW46MCxuZXh0OjE1MH0sCiAge25hbWU6IlNpbHZlciIsbWluOjE1MCxuZXh0OjQwMH0sCiAge25hbWU6IkdvbGQiLG1pbjo0MDAsbmV4dDo4MDB9LAogIHtuYW1lOiJEaWFtb25kIixtaW46ODAwLG5leHQ6MTQwMH0sCiAge25hbWU6Ik1hc3RlciIsbWluOjE0MDAsbmV4dDpudWxsfQogXTsKIGxldCBwcm9maWxlPWxvYWRQcm9maWxlKCk7CiBmdW5jdGlvbiBsb2FkUHJvZmlsZSgpewogIHRyeXtyZXR1cm4gT2JqZWN0LmFzc2lnbih7eHA6MCxnYW1lczowLHdpbnM6MCxkcmF3czowLGxvc3NlczowLGhpc3Rvcnk6W119LEpTT04ucGFyc2UobG9jYWxTdG9yYWdlLmdldEl0ZW0oUFJPRklMRV9LRVkpfHwie30iKSl9CiAgY2F0Y2goZSl7cmV0dXJuIHt4cDowLGdhbWVzOjAsd2luczowLGRyYXdzOjAsbG9zc2VzOjAsaGlzdG9yeTpbXX07fQogfQogZnVuY3Rpb24gc2F2ZVByb2ZpbGUoKXt0cnl7bG9jYWxTdG9yYWdlLnNldEl0ZW0oUFJPRklMRV9LRVksSlNPTi5zdHJpbmdpZnkocHJvZmlsZSkpO31jYXRjaChlKXt9fQogZnVuY3Rpb24gY3VycmVudFJhbmsoKXsKICBsZXQgcmFuaz1yYW5rTGV2ZWxzWzBdOwogIGZvcihjb25zdCByIG9mIHJhbmtMZXZlbHMpaWYocHJvZmlsZS54cD49ci5taW4pcmFuaz1yOwogIHJldHVybiByYW5rOwogfQogZnVuY3Rpb24gYWNoaWV2ZW1lbnREYXRhKCl7CiAgcmV0dXJuIFsKICAgWyJmaXJzdF9nYW1lIiwiRmlyc3QgU3RlcHMiLCJDb21wbGV0ZSB5b3VyIGZpcnN0IG1hdGNoIixwcm9maWxlLmdhbWVzPj0xXSwKICAgWyJmaXJzdF93aW4iLCJGaXJzdCBWaWN0b3J5IiwiV2luIHlvdXIgZmlyc3QgbWF0Y2giLHByb2ZpbGUud2lucz49MV0sCiAgIFsiZml2ZV93aW5zIiwiUmlzaW5nIFN0YXIiLCJXaW4gNSBtYXRjaGVzIixwcm9maWxlLndpbnM+PTVdLAogICBbInRlbl9nYW1lcyIsIlJlZ3VsYXIgUGxheWVyIiwiUGxheSAxMCBtYXRjaGVzIixwcm9maWxlLmdhbWVzPj0xMF0sCiAgIFsidGhyZWVfZHJhd3MiLCJQZWFjZWtlZXBlciIsIkZpbmlzaCAzIGRyYXduIG1hdGNoZXMiLHByb2ZpbGUuZHJhd3M+PTNdLAogICBbImZpdmVfaHVuZHJlZF94cCIsIkRlZGljYXRlZCIsIkVhcm4gNTAwIFhQIixwcm9maWxlLnhwPj01MDBdLAogICBbImRpYW1vbmQiLCJEaWFtb25kIENsdWIiLCJSZWFjaCBEaWFtb25kIHJhbmsiLHByb2ZpbGUueHA+PTgwMF0sCiAgIFsibWFzdGVyIiwiTWFzdGVyIENsYXNzIiwiUmVhY2ggTWFzdGVyIHJhbmsiLHByb2ZpbGUueHA+PTE0MDBdCiAgXTsKIH0KIGZ1bmN0aW9uIHJlbmRlclByb2ZpbGUoKXsKICBjb25zdCByYW5rPWN1cnJlbnRSYW5rKCksaWR4PXJhbmtMZXZlbHMuaW5kZXhPZihyYW5rKSxuZXh0PXJhbmsubmV4dDsKICAkKCJyYW5rTmFtZSIpLnRleHRDb250ZW50PXJhbmsubmFtZTsKICAkKCJ0b3RhbFhwIikudGV4dENvbnRlbnQ9cHJvZmlsZS54cDsKICAkKCJnYW1lc1BsYXllZCIpLnRleHRDb250ZW50PXByb2ZpbGUuZ2FtZXM7CiAgJCgid2luUmF0ZSIpLnRleHRDb250ZW50PXByb2ZpbGUuZ2FtZXM/TWF0aC5yb3VuZChwcm9maWxlLndpbnMvcHJvZmlsZS5nYW1lcyoxMDApKyIlIjoiMCUiOwogIGlmKG5leHQ9PT1udWxsKXskKCJ4cEJhciIpLnN0eWxlLndpZHRoPSIxMDAlIjskKCJ4cE5leHQiKS50ZXh0Q29udGVudD0iSGlnaGVzdCByYW5rIHJlYWNoZWQg4oCUIE1hc3RlciI7fQogIGVsc2V7CiAgIGNvbnN0IHNwYW49bmV4dC1yYW5rLm1pbixwcm9ncmVzcz1wcm9maWxlLnhwLXJhbmsubWluOwogICAkKCJ4cEJhciIpLnN0eWxlLndpZHRoPU1hdGgubWF4KDAsTWF0aC5taW4oMTAwLHByb2dyZXNzL3NwYW4qMTAwKSkrIiUiOwogICAkKCJ4cE5leHQiKS50ZXh0Q29udGVudD1wcm9ncmVzcysiIC8gIitzcGFuKyIgWFAgaW4gIityYW5rLm5hbWUrIiDCtyAiKyhuZXh0LXByb2ZpbGUueHApKyIgWFAgdG8gIityYW5rTGV2ZWxzW2lkeCsxXS5uYW1lOwogIH0KICAkKCJhY2hpZXZlbWVudHMiKS5pbm5lckhUTUw9YWNoaWV2ZW1lbnREYXRhKCkubWFwKGE9Pic8ZGl2IGNsYXNzPSJhY2hpZXZlbWVudCAnKyhhWzNdPyIiOiJsb2NrZWQiKSsnIj4nKyhhWzNdPyLwn4+FICI6IvCflJIgIikrYVsxXSsnPC9kaXY+Jykuam9pbigiIik7CiAgJCgibWF0Y2hIaXN0b3J5IikuaW5uZXJIVE1MPXByb2ZpbGUuaGlzdG9yeS5sZW5ndGg/cHJvZmlsZS5oaXN0b3J5LnNsaWNlKDAsNikubWFwKG09Pic8ZGl2IGNsYXNzPSJoaXN0b3J5LXJvdyI+PHNwYW4+JyttLmRhdGUrJyDCtyAnK20ubGFiZWwrJzwvc3Bhbj48c3Ryb25nPicrbS54cCsnIFhQPC9zdHJvbmc+PC9kaXY+Jykuam9pbigiIik6JzxzcGFuIGNsYXNzPSJtdXRlZCI+RmluaXNoIGEgZ2FtZSB0byBzdGFydCB5b3VyIGhpc3RvcnkuPC9zcGFuPic7CiB9CiBmdW5jdGlvbiByZWNvcmRQcm9maWxlTWF0Y2gocmVzdWx0KXsKICBjb25zdCBlYXJuZWQ9cmVzdWx0PT09InlvdSI/NTA6cmVzdWx0PT09ImRyYXciPzIwOjEwOwogIHByb2ZpbGUuZ2FtZXMrKzsKICBpZihyZXN1bHQ9PT0ieW91Iilwcm9maWxlLndpbnMrKzsKICBlbHNlIGlmKHJlc3VsdD09PSJkcmF3Iilwcm9maWxlLmRyYXdzKys7CiAgZWxzZSBwcm9maWxlLmxvc3NlcysrOwogIHByb2ZpbGUueHArPWVhcm5lZDsKICBwcm9maWxlLmhpc3RvcnkudW5zaGlmdCh7ZGF0ZTpuZXcgRGF0ZSgpLnRvTG9jYWxlRGF0ZVN0cmluZygpLGxhYmVsOnJlc3VsdD09PSJ5b3UiPyJXaW4iOnJlc3VsdD09PSJkcmF3Ij8iRHJhdyI6Ikxvc3MiLHhwOmVhcm5lZH0pOwogIHByb2ZpbGUuaGlzdG9yeT1wcm9maWxlLmhpc3Rvcnkuc2xpY2UoMCwyMCk7CiAgc2F2ZVByb2ZpbGUoKTtyZW5kZXJQcm9maWxlKCk7CiAgcmV0dXJuIGVhcm5lZDsKIH0KCiBjb25zdCBQVVpaTEVfS0VZPSJncmFuZG1hc3RlckFyZW5hUHV6emxlc1YxIjsKIGNvbnN0IHB1enpsZVNldD1bCiAge2lkOiJtYXRlLWEiLGxldmVsOiJiZWdpbm5lciIsdGl0bGU6IlF1ZWVuIHNhY3JpZmljZSBwYXR0ZXJuIixmZW46IjdrLzZwcC81S1ExLzgvOC84LzgvOCB3IC0gLSAwIDEiLG1vdmVzOlsiZzZnNyJdLGhpbnQ6IllvdXIgcXVlZW4gY2FuIGNhcHR1cmUgdGhlIHBhd24gYmVzaWRlIHRoZSBraW5nLiBJcyB0aGF0IHNxdWFyZSBwcm90ZWN0ZWQgYnkgeW91ciBraW5nPyIsZXhwbGFpbjoiUXhnNyBpcyBjaGVja21hdGUuIFlvdXIgcXVlZW4gYXR0YWNrcyB0aGUga2luZyBvbiBoOCwgYW5kIHlvdXIga2luZyBvbiBmNiBwcm90ZWN0cyB0aGUgcXVlZW4gb24gZzcuIFRoZSBibGFjayBraW5nIGNhbm5vdCBjYXB0dXJlIGl0IG9yIGVzY2FwZS4ifSwKICB7aWQ6Im1hdGUtYiIsbGV2ZWw6ImludGVybWVkaWF0ZSIsdGl0bGU6Ik1pcnJvci1pbWFnZSBjaGVja21hdGUiLGZlbjoiazcvcHA2LzFRSzUvOC84LzgvOC84IHcgLSAtIDAgMSIsbW92ZXM6WyJiNmI3Il0saGludDoiTG9vayBhdCB0aGUgcGF3biBuZXh0IHRvIHRoZSBibGFjayBraW5nLiBDYW4geW91ciBxdWVlbiBjYXB0dXJlIGl0IHdpdGggc3VwcG9ydCBmcm9tIHlvdXIga2luZz8iLGV4cGxhaW46IlF4YjcgaXMgY2hlY2ttYXRlLiBUaGUgcXVlZW
+(() => {
+ const $=id=>document.getElementById(id);
+ if(typeof Chess==="undefined"){
+  const board=$("board");
+  board.style.display="grid";
+  board.innerHTML='<div style="grid-column:1/-1;display:grid;place-items:center;padding:28px;text-align:center;color:#f4f0e8"> <div><div style="font-size:42px">♟️</div><b>Chess rules library did not load</b><p style="color:#aab4c4;font-size:13px">Please open this HTML file in Chrome with an internet connection, then refresh.</p></div></div>';
+  $("status").textContent="Unable to start chess";
+  $("substatus").textContent="Internet connection required";
+  return;
+ }
+ const game=new Chess();
+ const glyph={w:{k:"♔",q:"♕",r:"♖",b:"♗",n:"♘",p:"♙"},b:{k:"♚",q:"♛",r:"♜",b:"♝",n:"♞",p:"♟"}};
+ let selected=null, legal=[], flipped=false, last=null, seconds=600, timer=null, thinking=false, capturedW=[],capturedB=[],matchFinished=false,engineTimer=null,engineBusy=false,engineWorker=null,reviewHistory=[];
+ let onlineMode=false,myOnlineColor=null,onlineRoomCode=null,onlineDb=null,onlineRoomRef=null,onlineUnsubscribe=null,onlineBusy=false,onlineLastFen="";
+ const files="abcdefgh";
+ const PROFILE_KEY="grandmasterArenaProfileV1";
+ const rankLevels=[
+  {name:"Bronze",min:0,next:150},
+  {name:"Silver",min:150,next:400},
+  {name:"Gold",min:400,next:800},
+  {name:"Diamond",min:800,next:1400},
+  {name:"Master",min:1400,next:null}
+ ];
+ let profile=loadProfile();
+ function loadProfile(){
+  try{return Object.assign({xp:0,games:0,wins:0,draws:0,losses:0,history:[]},JSON.parse(localStorage.getItem(PROFILE_KEY)||"{}"))}
+  catch(e){return {xp:0,games:0,wins:0,draws:0,losses:0,history:[]};}
+ }
+ function saveProfile(){try{localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));}catch(e){}}
+ function currentRank(){
+  let rank=rankLevels[0];
+  for(const r of rankLevels)if(profile.xp>=r.min)rank=r;
+  return rank;
+ }
+ function achievementData(){
+  return [
+   ["first_game","First Steps","Complete your first match",profile.games>=1],
+   ["first_win","First Victory","Win your first match",profile.wins>=1],
+   ["five_wins","Rising Star","Win 5 matches",profile.wins>=5],
+   ["ten_games","Regular Player","Play 10 matches",profile.games>=10],
+   ["three_draws","Peacekeeper","Finish 3 drawn matches",profile.draws>=3],
+   ["five_hundred_xp","Dedicated","Earn 500 XP",profile.xp>=500],
+   ["diamond","Diamond Club","Reach Diamond rank",profile.xp>=800],
+   ["master","Master Class","Reach Master rank",profile.xp>=1400]
+  ];
+ }
+ function renderProfile(){
+  const rank=currentRank(),idx=rankLevels.indexOf(rank),next=rank.next;
+  $("rankName").textContent=rank.name;
+  $("totalXp").textContent=profile.xp;
+  $("gamesPlayed").textContent=profile.games;
+  $("winRate").textContent=profile.games?Math.round(profile.wins/profile.games*100)+"%":"0%";
+  if(next===null){$("xpBar").style.width="100%";$("xpNext").textContent="Highest rank reached — Master";}
+  else{
+   const span=next-rank.min,progress=profile.xp-rank.min;
+   $("xpBar").style.width=Math.max(0,Math.min(100,progress/span*100))+"%";
+   $("xpNext").textContent=progress+" / "+span+" XP in "+rank.name+" · "+(next-profile.xp)+" XP to "+rankLevels[idx+1].name;
+  }
+  $("achievements").innerHTML=achievementData().map(a=>'<div class="achievement '+(a[3]?"":"locked")+'">'+(a[3]?"🏅 ":"🔒 ")+a[1]+'</div>').join("");
+  $("matchHistory").innerHTML=profile.history.length?profile.history.slice(0,6).map(m=>'<div class="history-row"><span>'+m.date+' · '+m.label+'</span><strong>'+m.xp+' XP</strong></div>').join(""):'<span class="muted">Finish a game to start your history.</span>';
+ }
+ function recordProfileMatch(result){
+  const earned=result==="you"?50:result==="draw"?20:10;
+  profile.games++;
+  if(result==="you")profile.wins++;
+  else if(result==="draw")profile.draws++;
+  else profile.losses++;
+  profile.xp+=earned;
+  profile.history.unshift({date:new Date().toLocaleDateString(),label:result==="you"?"Win":result==="draw"?"Draw":"Loss",xp:earned});
+  profile.history=profile.history.slice(0,20);
+  saveProfile();renderProfile();
+  return earned;
+ }
+
+ const PUZZLE_KEY="grandmasterArenaPuzzlesV1";
+ const puzzleSet=[
+  {id:"mate-a",level:"beginner",title:"Queen sacrifice pattern",fen:"7k/6pp/5KQ1/8/8/8/8/8 w - - 0 1",moves:["g6g7"],hint:"Your queen can capture the pawn beside the king. Is that square protected by your king?",explain:"Qxg7 is checkmate. Your queen attacks the king on h8, and your king on f6 protects the queen on g7. The black king cannot capture it or escape."},
+  {id:"mate-b",level:"intermediate",title:"Mirror-image checkmate",fen:"k7/pp6/1QK5/8/8/8/8/8 w - - 0 1",moves:["b6b7"],hint:"Look at the pawn next to the black king. Can your queen capture it with support from your king?",explain:"Qxb7 is checkmate. The queen checks the king on a8 and is protected by your king on c6. The black king has no safe escape square."},
+  {id:"mate-c",level:"advanced",title:"Black's mating move",fen:"8/8/8/8/8/5kq1/6PP/7K b - - 0 1",moves:["g3g2"],hint:"Black to move. Can the queen capture the pawn beside the white king, protected by the black king?",explain:"...Qxg2 is checkmate. The queen attacks the white king on h1, and the black king on f3 protects the queen on g2. White cannot capture the queen or escape the check."}
+ ];
+ let puzzleState={index:0,selected:null,solved:false,hintUsed:false,attempts:0};
+ let puzzleStats=loadPuzzleStats();
+ function loadPuzzleStats(){try{return Object.assign({solved:0,streak:0,bestStreak:0,completed:[]},JSON.parse(localStorage.getItem(PUZZLE_KEY)||"{}"))}catch(e){return {solved:0,streak:0,bestStreak:0,completed:[]}}}
+ function savePuzzleStats(){try{localStorage.setItem(PUZZLE_KEY,JSON.stringify(puzzleStats))}catch(e){}}
+ function puzzleDateIndex(){
+  const now=new Date();const start=new Date(now.getFullYear(),0,0);
+  const day=Math.floor((now-start)/86400000);
+  return day%puzzleSet.length;
+ }
+ function currentPuzzle(){return puzzleSet[puzzleState.index%puzzleSet.length]}
+ function puzzleChess(){return new Chess(currentPuzzle().fen)}
+ function renderPuzzleStats(){
+  $("puzzleStreak").textContent=puzzleStats.streak;
+  $("puzzlesSolved").textContent=puzzleStats.solved;
+ }
+ function renderPuzzle(){
+  const puzzle=currentPuzzle(),g=puzzleChess(),board=$("puzzleBoard");
+  $("puzzleDailyLabel").textContent=(puzzleState.index===puzzleDateIndex()?"Today's challenge · ":"Challenge · ")+puzzle.title+" · "+(g.turn()==="w"?"White":"Black")+" to move";
+  board.innerHTML="";
+  const rows=puzzle.fen.split(" ")[0].split("/");
+    const pieces=[];
+  rows.forEach((row,r)=>{let c=0;for(const ch of row){if(/[1-8]/.test(ch)){for(let n=0;n<Number(ch);n++)pieces.push({sq:"abcdefgh"[c]+(8-r),piece:""});c+=Number(ch)}else{pieces.push({sq:"abcdefgh"[c]+(8-r),piece:ch});c++}}});
+  const legal=g.moves({verbose:true}),targets=puzzleState.selected?legal.filter(m=>m.from===puzzleState.selected).map(m=>m.to):[];
+  for(let vr=0;vr<8;vr++)for(let vc=0;vc<8;vc++){
+   const sq="abcdefgh"[vc]+(8-vr),item=pieces.find(x=>x.sq===sq),el=document.createElement("button");
+   el.className="puzzle-square "+((vr+vc)%2===0?"light":"dark");
+   if(puzzleState.selected===sq)el.classList.add("selected");
+   if(targets.includes(sq))el.classList.add("target");
+   if(item&&item.piece){const isWhite=item.piece===item.piece.toUpperCase();el.textContent=({K:"♔",Q:"♕",R:"♖",B:"♗",N:"♘",P:"♙",k:"♚",q:"♛",r:"♜",b:"♝",n:"♞",p:"♟"})[item.piece];el.style.color=isWhite?"#fffdf5":"#171b22";el.style.textShadow=isWhite?"0 2px 2px #333":"0 1px 1px #fff8";}
+   el.onclick=()=>puzzleClick(sq);board.appendChild(el);
+  }
+ }
+ function puzzleClick(sq){
+  if(puzzleState.solved)return;
+  const g=puzzleChess(),legal=g.moves({verbose:true});
+  if(puzzleState.selected){
+   const candidate=legal.find(m=>m.from===puzzleState.selected&&m.to===sq);
+   if(candidate){
+    const uci=candidate.from+candidate.to+(candidate.promotion||"");
+    const expected=currentPuzzle().moves[0];
+    const verification=new Chess(currentPuzzle().fen);
+    const verifiedMove=verification.move({from:candidate.from,to:candidate.to,promotion:candidate.promotion||"q"});
+    if(uci===expected&&verifiedMove&&verification.in_checkmate()){
+     puzzleState.solved=true;puzzleStats.solved++;puzzleStats.streak++;puzzleStats.bestStreak=Math.max(puzzleStats.bestStreak,puzzleStats.streak);
+     puzzleStats.completed.push(currentPuzzle().id);puzzleStats.completed=puzzleStats.completed.slice(-100);
+     profile.xp+=currentPuzzle().level==="beginner"?10:currentPuzzle().level==="intermediate"?20:30;
+     saveProfile();renderProfile();savePuzzleStats();renderPuzzleStats();
+     $("puzzleStatus").textContent="Correct! "+currentPuzzle().explain+" You earned "+(currentPuzzle().level==="beginner"?10:currentPuzzle().level==="intermediate"?20:30)+" XP.";
+    }else{
+     puzzleState.attempts++;puzzleStats.streak=0;savePuzzleStats();renderPuzzleStats();
+     $("puzzleStatus").textContent="Not quite. That move is legal, but it is not the puzzle's target move. Try again or use Hint.";
+    }
+    puzzleState.selected=null;renderPuzzle();return;
+   }
+  }
+  if(g.get(sq)&&g.get(sq).color===g.turn())puzzleState.selected=sq;else puzzleState.selected=null;
+  renderPuzzle();
+ }
+ function loadPuzzle(index){
+  puzzleState={index:(index+puzzleSet.length)%puzzleSet.length,selected:null,solved:false,hintUsed:false,attempts:0};
+  $("puzzleLevel").value=currentPuzzle().level;
+  $("puzzleStatus").textContent="Find the best move for the side to move. Select a piece, then its destination.";
+  renderPuzzle();
+ }
+ function puzzleHint(){
+  if(puzzleState.solved)return;
+  puzzleState.hintUsed=true;
+  $("puzzleStatus").textContent="Hint: "+currentPuzzle().hint;
+ }
+ function initPuzzles(){
+  $("puzzleLevel").onchange=()=>{
+   const level=$("puzzleLevel").value;
+   const idx=puzzleSet.findIndex(p=>p.level===level);
+   loadPuzzle(idx<0?0:idx);
+  };
+  $("puzzleHint").onclick=puzzleHint;
+  $("puzzleReset").onclick=()=>loadPuzzle(puzzleState.index);
+  $("puzzleNext").onclick=()=>loadPuzzle(puzzleState.index+1);
+  renderPuzzleStats();
+  loadPuzzle(puzzleDateIndex());
+ }
+
+ const SCORE_KEY="grandmasterArenaScoresV1";
+ let totals=loadTotals();
+ function loadTotals(){try{return Object.assign({you:0,cpu:0,wins:0,draws:0,losses:0},JSON.parse(localStorage.getItem(SCORE_KEY)||"{}"))}catch(e){return {you:0,cpu:0,wins:0,draws:0,losses:0}}}
+ function saveTotals(){try{localStorage.setItem(SCORE_KEY,JSON.stringify(totals))}catch(e){}}
+ function updateScoreboard(){
+  $("youPoints").textContent=totals.you;
+  $("cpuPoints").textContent=totals.cpu;
+  $("record").textContent=totals.wins+" wins · "+totals.draws+" draws · "+totals.losses+" losses";
+ }
+ function finishMatch(result,reason,explanation){
+  if(matchFinished)return;
+  matchFinished=true;
+  let youEarned=0,cpuEarned=0,title="";
+  if(result==="you"){youEarned=20;totals.you+=20;totals.wins++;title="🏆 You win!";}
+  else if(result==="cpu"){cpuEarned=20;totals.cpu+=20;totals.losses++;title="Computer wins";}
+  else{youEarned=5;cpuEarned=5;totals.you+=5;totals.cpu+=5;totals.draws++;title="🤝 Draw";}
+  saveTotals();updateScoreboard();
+  const xpEarned=recordProfileMatch(result);
+  $("resultTitle").textContent=title;
+  $("resultReason").textContent=reason+". "+(explanation||"");
+  $("resultDetail").textContent="Points earned — You: +"+youEarned+" · Computer: +"+cpuEarned+" · Your XP: +"+xpEarned;
+  if(timer)clearInterval(timer);
+ }
+ function drawExplanation(){
+  if(game.in_stalemate())return ["Stalemate","The player whose turn it was had no legal move, but their king was not in check. This is a draw, not a win."];
+  if(typeof game.in_threefold_repetition==="function"&&game.in_threefold_repetition())return ["Threefold repetition","The same chess position occurred three times. Either player can claim a draw under this rule."];
+  if(typeof game.insufficient_material==="function"&&game.insufficient_material())return ["Insufficient material","There are not enough pieces left to force checkmate, so the game is a draw."];
+  const fen=game.fen().split(" ");
+  if(Number(fen[4])>=100)return ["50-move rule","Fifty moves by each player passed without a pawn move or a capture. The game can be drawn under this rule."];
+  return ["Draw by chess rules","The game ended without a winner under the chess rules."];
+ }
+ function checkMatchEnd(){
+  if(matchFinished)return;
+  if(!game.game_over())return;
+  if(game.in_checkmate()){
+   const winnerColor=game.turn()==="w"?"b":"w";
+   const winner=onlineMode?(winnerColor===myOnlineColor?"you":"cpu"):(winnerColor==="w"?"you":"cpu");
+   finishMatch(winner,"Checkmate",onlineMode?(winner==="you"?"You delivered checkmate. Your opponent has no legal escape.":"Your opponent delivered checkmate. Your king has no legal escape."):(winner==="you"?"Your move attacked the opposing king, and the computer had no legal way to escape.":"Your king was under attack and you had no legal move to escape. The computer wins."));
+  }else{
+   const detail=drawExplanation();
+   finishMatch("draw",detail[0],detail[1]);
+  }
+ }
+
+ function renderReviews(){
+  const box=$("reviewList");
+  if(!box)return;
+  if(!reviewHistory.length){box.innerHTML='<span class="muted">Play a move to receive feedback.</span>';return;}
+  box.innerHTML=reviewHistory.slice().reverse().map(r=>'<div class="review-item"><div class="review-head"><span>'+r.side+' · '+r.san+'</span><span class="grade '+r.kind+'">'+r.grade+'</span></div><p>'+r.detail+'</p>'+(r.alternative?'<p><strong>Alternative to consider:</strong> '+r.alternative+'</p>':'')+(r.whyAlternative?'<p><strong>Why:</strong> '+r.whyAlternative+'</p>':'')+(r.continuation?'<p><strong>Possible reply:</strong> '+r.continuation+'</p>':'')+'</div>').join("");
+ }
+ const pieceNames={p:"pawn",n:"knight",b:"bishop",r:"rook",q:"queen",k:"king"};
+ const pieceValues={p:1,n:3,b:3,r:5,q:9,k:100};
+ function fenWithTurn(fen,turn){
+  const parts=fen.split(" ");parts[1]=turn;return parts.join(" ");
+ }
+ function freeCaptures(fen,attackerTurn){
+  try{
+   const f=fenWithTurn(fen,attackerTurn),probe=new Chess(f);
+   const found=[];
+   for(const m of probe.moves({verbose:true})){
+    if(!m.captured)continue;
+    const test=new Chess(f);
+    test.move({from:m.from,to:m.to,promotion:m.promotion||"q"});
+    const canRecapture=test.moves({verbose:true}).some(reply=>reply.to===m.to&&reply.captured);
+    if(!canRecapture)found.push({square:m.to,piece:m.captured,attacker:m.piece});
+   }
+   return found;
+  }catch(e){return [];}
+ }
+ function attackedTargetsFrom(fen,turn,from){
+  try{
+   const probe=new Chess(fenWithTurn(fen,turn));
+   return probe.moves({square:from,verbose:true}).filter(m=>m.captured);
+  }catch(e){return [];}
+ }
+ function coachCandidateInfo(fen, candidate){
+  try{
+   const probe=new Chess(fen);
+   const played=probe.move({from:candidate.from,to:candidate.to,promotion:candidate.promotion||"q"});
+   if(!played)return null;
+   const after=probe.fen();
+   const opponent=probe.moves({verbose:true});
+   let loose=null;
+   for(const reply of opponent){
+    if(!reply.captured)continue;
+    const test=new Chess(after);
+    test.move({from:reply.from,to:reply.to,promotion:reply.promotion||"q"});
+    const recapture=test.moves({verbose:true}).some(m=>m.to===reply.to&&m.captured);
+    if(!recapture&&(!loose||(pieceValues[reply.captured]||0)>(pieceValues[loose.captured]||0)))loose=reply;
+   }
+   const center=["d4","e4","d5","e5"].includes(played.to);
+   const develop=["n","b"].includes(played.piece)&&((candidate.from[1]==="1"&&candidate.to[1]!=="1")||(candidate.from[1]==="8"&&candidate.to[1]!=="8"));
+   const score=(pieceValues[played.captured]||0)*10+(played.san.includes("#")?1000:played.san.includes("+")?5:0)+(played.flags&&(played.flags.includes("k")||played.flags.includes("q"))?4:0)+(center?3:0)+(develop?2:0)-(loose?(pieceValues[loose.captured]||0)*12:0);
+   return {move:played,score,loose};
+  }catch(e){return null;}
+ }
+ function findAlternative(fen,actual){
+  try{
+   const probe=new Chess(fen), candidates=probe.moves({verbose:true});
+   const ranked=candidates.filter(m=>m.from!==actual.from||m.to!==actual.to)
+    .map(m=>coachCandidateInfo(fen,m)).filter(Boolean).sort((a,b)=>b.score-a.score);
+   if(!ranked.length)return null;
+   const best=ranked[0];
+   const played=coachCandidateInfo(fen,actual);
+   if(!played||best.score<=played.score+1)return null;
+   const move=best.move;
+   let why="This option scores better in the coach's quick one-move check because it creates a more useful immediate threat or improves piece activity.";
+   if(move.captured)why="This alternative immediately captures a "+(pieceNames[move.captured]||"piece")+".";
+   else if(move.san.includes("+"))why="This alternative gives check, forcing the opponent to answer the king threat.";
+   else if(best.loose)why="This alternative has a tactical drawback too, so it is not recommended; look for another move.";
+   else if(["d4","e4","d5","e5"].includes(move.to))why="This alternative contests the centre, where pieces can gain more space and influence.";
+   else if(["n","b"].includes(move.piece))why="This alternative develops a minor piece from its starting square.";
+   let continuation="";
+   if(best.loose)continuation="The opponent may be able to play "+best.loose.san+" and win your "+(pieceNames[best.loose.captured]||"piece")+".";
+   else if(move.san.includes("+"))continuation="The opponent must answer the check; ordinary moves that ignore the king attack are illegal.";
+   else{
+    const after=new Chess(fen);after.move({from:move.from,to:move.to,promotion:move.promotion||"q"});
+    const replies=after.moves({verbose:true});
+    const reply=replies.find(r=>r.captured);
+    if(reply)continuation="One possible reply is "+reply.san+", which captures a "+(pieceNames[reply.captured]||"piece")+".";
+    else continuation="The opponent gets a turn to respond; this short preview does not calculate a forced sequence.";
+   }
+   return {alternative:move.san+" ("+move.from+" → "+move.to+")",whyAlternative:why,continuation};
+  }catch(e){return null;}
+ }
+ function reviewMove(move,color,beforeFen){
+  const afterFen=game.fen(), opponent=color==="w"?"b":"w";
+  const who=color==="w"?"You":"Computer";
+  const name=pieceNames[move.piece]||"piece";
+  let grade="Okay",kind="",detail="";
+  const beforeFree=freeCaptures(beforeFen,opponent);
+  const afterFree=freeCaptures(afterFen,opponent);
+  const newLoose=afterFree.filter(a=>!beforeFree.some(b=>b.square===a.square&&b.piece===a.piece));
+  const bestLoose=newLoose.sort((a,b)=>(pieceValues[b.piece]||0)-(pieceValues[a.piece]||0))[0];
+
+  if(move.san.includes("#")){
+   grade="Excellent";kind="good";detail="Checkmate. Your "+name+" move leaves the opposing king in check with no legal escape.";
+  }else if(bestLoose){
+   const victim=pieceNames[bestLoose.piece]||"piece";
+   const value=pieceValues[bestLoose.piece]||0;
+   grade=value>=5?"Blunder":"Mistake";kind="bad";
+   detail="This move leaves your "+victim+" on "+bestLoose.square+" available for the opponent to capture without an immediate legal recapture. Protect it or move it before continuing.";
+  }else if(move.san.includes("+")){
+   grade="Strong";kind="good";detail="Check. The opposing king is attacked and must answer the check before making any other move.";
+  }else if(move.captured){
+   const capturedName=pieceNames[move.captured]||"piece";
+   const hanging=afterFree.some(a=>a.square===move.to);
+   if(hanging){
+    grade="Inaccuracy";kind="warn";
+    detail="You captured their "+capturedName+", but your "+name+" on "+move.to+" can be taken back without an immediate recapture. Check the exchange before playing this capture.";
+   }else{
+    grade=(pieceValues[move.captured]||0)>=(pieceValues[move.piece]||0)?"Good":"Good";
+    kind="good";detail="You won their "+capturedName+" on "+move.to+". The coach found no immediate free recapture of your capturing piece.";
+    }
+  }else if(move.flags&&move.flags.includes("k")||move.flags&&move.flags.includes("q")){
+   grade="Good";kind="good";detail="You castled. Your king moves away from the centre and your rook joins the game.";
+  }else{
+   const threats=attackedTargetsFrom(afterFen,color,move.to);
+   const strongest=threats.sort((a,b)=>(pieceValues[b.captured]||0)-(pieceValues[a.captured]||0))[0];
+   if(strongest){
+    const target=pieceNames[strongest.captured]||"piece";
+    grade=strongest.captured==="q"?"Strong":"Good";kind="good";
+    detail="Your "+name+" on "+move.to+" now attacks the opponent's "+target+" on "+strongest.to+". They may need to move or defend it.";
+   }else if(move.piece==="p"&&["d","e"].includes(move.to[0])){
+    grade="Good";kind="good";detail="You advanced a central pawn to "+move.to+". Central pawns fight for key squares and open lines for your pieces.";
+   }else if(move.piece==="n"||move.piece==="b"){
+    const home=color==="w"?"1":"8";
+    if(move.from[1]===home){
+     grade="Good";kind="good";detail="You developed your "+name+" from its starting square. This brings a piece into play instead of leaving it on the back rank.";
+    }else{
+     detail="You moved your "+name+" from "+move.from+" to "+move.to+". Check whether this square improves its activity and whether it is protected.";
+    }
+   }else if(move.piece==="p"){
+    detail="Your pawn moved from "+move.from+" to "+move.to+". This gains space, but pawns cannot move backwards, so check what squares you leave weak.";
+   }else if(move.piece==="q"){
+    grade="Okay";detail="You moved your queen from "+move.from+" to "+move.to+". Keep an eye on attacks from smaller pieces; queens can be chased by pawns and knights.";
+   }else if(move.piece==="r"){
+    grade="Okay";detail="You moved your rook to "+move.to+". Rooks are usually strongest on open files or behind passed pawns.";
+   }else{
+    detail="You moved your "+name+" from "+move.from+" to "+move.to+". The move is legal, but look for threats, undefended pieces and safer developing moves.";
+   }
+  }
+  const alternative=findAlternative(beforeFen,move);
+  reviewHistory.push({side:who,san:move.san,grade,kind,detail,
+   alternative:alternative?alternative.alternative:"",
+   whyAlternative:alternative?alternative.whyAlternative:"",
+   continuation:alternative?alternative.continuation:""});
+  renderReviews();
+ }
+  function squareName(r,c){return files[c]+(8-r)}
+ function render(){
+  const board=$("board");board.innerHTML="";
+  for(let vr=0;vr<8;vr++)for(let vc=0;vc<8;vc++){
+   const r=flipped?7-vr:vr,c=flipped?7-vc:vc,sq=squareName(r,c),p=game.get(sq),el=document.createElement("button");
+   el.className="square "+((r+c)%2===0?"light":"dark");
+   if(selected===sq)el.classList.add("selected");
+   if(last&&(last.from===sq||last.to===sq))el.classList.add("last");
+   const target=legal.find(m=>m.to===sq);if(target)el.classList.add(p?"capture":"hint");
+   if(p){el.textContent=glyph[p.color][p.type];el.classList.add(p.color==="w"?"whitepiece":"blackpiece")}
+   el.setAttribute("aria-label",sq+(p?" "+p.color+" "+p.type:""));el.onclick=()=>clickSquare(sq);board.appendChild(el);
+  }
+  $("status").textContent=game.game_over()?(game.in_checkmate()?"Checkmate — "+(game.turn()==="w"?"Black":"White")+" wins": "Game drawn"):onlineMode?(game.turn()===myOnlineColor?"Your move ("+(myOnlineColor==="w"?"White":"Black")+")":"Waiting for opponent ("+(game.turn()==="w"?"White":"Black")+")"):game.turn()==="w"?"Your move (White)":"Computer thinking / Black";
+  $("substatus").textContent=game.in_check()?"Check!":thinking?"Calculating a move…":onlineMode?"Private room · "+onlineRoomCode:"Select a piece, then its destination";
+  $("undo").disabled=onlineMode||game.history().length===0||thinking;
+  const hist=game.history();let rows="";for(let i=0;i<hist.length;i+=2)rows+=`<div class="move-row"><span>${i/2+1}.</span><span>${hist[i]||""}</span><span>${hist[i+1]||""}</span></div>`;
+  $("moves").innerHTML=rows||'<span class="muted">Your moves will appear here.</span>';
+  capturedW=[];capturedB=[];
+  game.history({verbose:true}).forEach(m=>{if(m.captured){if(m.color==="w")capturedW.push(m.captured);else capturedB.push(m.captured)}});
+  $("wc").textContent=capturedW.map(x=>glyph.b[x]).join(" ");$("bc").textContent=capturedB.map(x=>glyph.w[x]).join(" ");
+  if(!matchFinished){$("resultTitle").textContent="Match in progress";$("resultDetail").textContent="Win: +20 · Draw: +5 each · Loss: +0";}
+  updateScoreboard();
+ }
+ const FIREBASE_CONFIG_KEY="grandmasterArenaFirebaseConfigV1";
+ const BUILT_IN_FIREBASE_CONFIG={"apiKey":"AIzaSyAjdL7BTJsz42mPDxJ_P5LRDDqI_QQFn5Q","authDomain":"grandmaster-chess-a9b86.firebaseapp.com","databaseURL":"https://grandmaster-chess-a9b86-default-rtdb.firebaseio.com","projectId":"grandmaster-chess-a9b86","storageBucket":"grandmaster-chess-a9b86.firebasestorage.app","messagingSenderId":"107830733365","appId":"1:107830733365:web:e2201a9ecfc9d08cb51f7c","measurementId":"G-7W947TST6X"};
+ let firebaseApp=null,firebaseAuth=null,firebaseDb=null,fbSignIn=null,fbRef=null,fbSet=null,fbGet=null,fbOnValue=null,fbUpdate=null,fbOff=null;
+ function onlineStatus(msg){$("onlineStatus").textContent=msg;}
+ function loadFirebaseConfig(){
+  try{const cfg=JSON.parse(localStorage.getItem(FIREBASE_CONFIG_KEY)||"null")||BUILT_IN_FIREBASE_CONFIG;$("firebaseConfig").value=JSON.stringify(cfg,null,2);}catch(e){}
+ }
+ function onlineNeedsHttps(){
+  if(location.protocol==="file:" || location.origin==="null"){
+   onlineStatus("Online rooms need an HTTPS website. This file is opened locally; upload it to a web host first, then try again.");
+   return true;
+  }
+  return false;
+ }
+ function friendlyFirebaseError(e){
+  const code=e&&e.code||"";
+  if(code.includes("unauthorized-domain"))return "This website domain is not authorized in Firebase Authentication. Add your hosting domain under Authentication → Settings → Authorized domains.";
+  if(code.includes("operation-not-allowed"))return "Anonymous sign-in is disabled. Enable Authentication → Sign-in method → Anonymous, then save.";
+  if(code.includes("permission-denied"))return "Firebase Database rules denied access. Check the /rooms rules and publish them.";
+  if(code.includes("network-request-failed") || (e&&/fetch|network|load/i.test(e.message||"")))return "Firebase could not load or reach its services. Check internet access and open the game from an HTTPS website.";
+  return (e&&e.message)||"Unknown Firebase error";
+ }
+ async function connectFirebase(){
+  let cfg;
+  try{cfg=JSON.parse($("firebaseConfig").value||localStorage.getItem(FIREBASE_CONFIG_KEY)||JSON.stringify(BUILT_IN_FIREBASE_CONFIG));}
+  catch(e){onlineStatus("Config is not valid JSON. Paste your Firebase web config.");throw e;}
+  if(!cfg.apiKey||!cfg.databaseURL||!cfg.projectId||!cfg.appId)throw new Error("Firebase config needs apiKey, databaseURL, projectId and appId.");
+  const appMod=await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js");
+  const authMod=await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js");
+  const dbMod=await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js");
+  firebaseApp=appMod.getApps().length?appMod.getApp():appMod.initializeApp(cfg);
+  firebaseAuth=authMod.getAuth(firebaseApp);firebaseDb=dbMod.getDatabase(firebaseApp);
+  fbSignIn=authMod.signInAnonymously;fbRef=dbMod.ref;fbSet=dbMod.set;fbGet=dbMod.get;fbOnValue=dbMod.onValue;fbUpdate=dbMod.update;fbOff=dbMod.off;
+  await fbSignIn(firebaseAuth);
+  localStorage.setItem(FIREBASE_CONFIG_KEY,JSON.stringify(cfg));
+  return cfg;
+ }
+ async function createOnlineRoom(){
+  try{
+   if(onlineNeedsHttps())return;
+   onlineStatus("Connecting to Firebase…");
+   await Promise.race([connectFirebase(),new Promise((_,reject)=>setTimeout(()=>reject(new Error("Firebase connection timed out after 15 seconds. Check internet access, HTTPS hosting, and Firebase Authentication settings.")),15000))]);
+   onlineRoomCode=String(Math.floor(100000+Math.random()*900000));
+   onlineRoomRef=fbRef(firebaseDb,"rooms/"+onlineRoomCode);
+   game.reset();myOnlineColor="w";onlineMode=true;matchFinished=false;onlineLastFen=game.fen();
+   await fbSet(onlineRoomRef,{fen:game.fen(),pgn:"",status:"waiting",createdAt:Date.now(),whiteUid:firebaseAuth.currentUser.uid});
+   subscribeOnlineRoom();
+   $("roomCodeInput").value=onlineRoomCode;
+   $("onlineRole").textContent="Room "+onlineRoomCode+" · You are White";$("modeLabel").textContent="vs Friend";$("difficulty").disabled=true;
+   onlineStatus("Room created. Share the 6-digit code with your friend.");
+   $("substatus").textContent="Waiting for a friend to join";
+   render();
+  }catch(e){console.error(e);onlineStatus("Could not create room: "+friendlyFirebaseError(e));}
+ }
+ async function joinOnlineRoom(){
+  try{
+   const code=$("roomCodeInput").value.trim();
+   if(!/^\d{6}$/.test(code)){onlineStatus("Enter a valid 6-digit room code.");return;}
+   if(onlineNeedsHttps())return;
+   onlineStatus("Connecting to Firebase…");
+   await Promise.race([connectFirebase(),new Promise((_,reject)=>setTimeout(()=>reject(new Error("Firebase connection timed out after 15 seconds. Check internet access, HTTPS hosting, and Firebase Authentication settings.")),15000))]);
+   onlineRoomCode=code;onlineRoomRef=fbRef(firebaseDb,"rooms/"+code);
+   const snap=await fbGet(onlineRoomRef);
+   if(!snap.exists()){onlineStatus("Room not found. Check the code.");return;}
+   const data=snap.val();
+   if(data.status==="playing"&&data.blackUid){onlineStatus("Room is already full.");return;}
+   if(data.whiteUid===firebaseAuth.currentUser.uid){onlineStatus("You created this room. Open it from another device/account to join.");return;}
+   myOnlineColor="b";onlineMode=true;matchFinished=false;
+   await fbUpdate(onlineRoomRef,{blackUid:firebaseAuth.currentUser.uid,status:"playing"});
+   game.load(data.fen||new Chess().fen());onlineLastFen=game.fen();
+   subscribeOnlineRoom();
+   $("onlineRole").textContent="Room "+code+" · You are Black";$("modeLabel").textContent="vs Friend";$("difficulty").disabled=true;
+   onlineStatus("Connected. You play Black. Waiting for White's move.");
+   render();
+  }catch(e){console.error(e);onlineStatus("Could not join room: "+friendlyFirebaseError(e));}
+ }
+ function subscribeOnlineRoom(){
+  if(onlineUnsubscribe)onlineUnsubscribe();
+  onlineUnsubscribe=fbOnValue(onlineRoomRef,snap=>{
+   if(!snap.exists())return;
+   const data=snap.val();
+   if(data.fen&&data.fen!==onlineLastFen){
+    onlineLastFen=data.fen;
+    try{game.load(data.fen);last=null;selected=null;legal=[];render();}catch(e){console.error("Invalid remote board state",e);}
+   }
+   if(data.status==="playing")onlineStatus("Friend connected · "+(myOnlineColor==="w"?"You are White":"You are Black"));
+   if(data.status==="finished")onlineStatus("Room match finished.");
+  });
+ }
+ async function publishOnlineMove(){
+  if(!onlineMode||!onlineRoomRef)return;
+  onlineLastFen=game.fen();
+  await fbUpdate(onlineRoomRef,{fen:game.fen(),pgn:game.pgn(),lastMove:game.history().slice(-1)[0]||"",turn:game.turn(),status:game.game_over()?"finished":"playing",updatedAt:Date.now()});
+ }
+ function leaveOnlineRoom(){
+  if(onlineUnsubscribe&&onlineRoomRef&&fbOff)fbOff(onlineRoomRef,"value",onlineUnsubscribe);
+  onlineUnsubscribe=null;onlineRoomRef=null;onlineRoomCode=null;onlineMode=false;myOnlineColor=null;onlineLastFen="";
+  onlineStatus("Offline mode · vs computer");$("onlineRole").textContent="No room connected";$("modeLabel").textContent="vs CPU";$("difficulty").disabled=false;
+  newGame();
+ }
+
+ function clickSquare(sq){
+  const activeColor=onlineMode?myOnlineColor:"w";
+  if(game.game_over()||game.turn()!==activeColor||thinking||onlineBusy)return;
+  if(selected){
+   const beforeFen=game.fen(),m=game.move({from:selected,to:sq,promotion:"q"});
+   if(m){
+    last=m;selected=null;legal=[];reviewMove(m,activeColor,beforeFen);checkMatchEnd();render();
+    if(onlineMode){publishOnlineMove().catch(e=>onlineStatus("Move sync failed: "+e.message));}
+    else if(!game.game_over()&&!matchFinished)setTimeout(computerMove,250);
+    return;
+   }
+  }
+  const piece=game.get(sq);
+  if(piece&&piece.color===activeColor){selected=sq;legal=game.moves({square:sq,verbose:true});}
+  else{selected=null;legal=[]}
+  render();
+ }
+ function scoreMove(m){let v=({p:100,n:320,b:335,r:500,q:900,k:20000})[m.piece]||0;if(m.captured)v+=({p:100,n:320,b:335,r:500,q:900})[m.captured]||0;if(m.san.includes("+"))v+=45;if(m.san.includes("#"))v+=100000;return v}
+ function computerMove(){
+  if(game.game_over())return;thinking=true;render();
+  setTimeout(()=>{
+   try {
+    if(game.game_over() || game.turn()!=="b"){thinking=false;render();return}
+    const moves=game.moves({verbose:true});
+    if(!moves.length){thinking=false;render();return}
+    const level=$("difficulty").value;
+    let chosen;
+    if(level==="easy"){chosen=moves[Math.floor(Math.random()*moves.length)]}
+    else{
+     const ranked=moves.map(m=>({m,s:scoreMove(m)+Math.random()*(level==="hard"?10:65)})).sort((a,b)=>b.s-a.s);
+     chosen=ranked[Math.floor(Math.random()*(level==="hard"?Math.min(2,ranked.length):Math.min(4,ranked.length)))].m;
+    }
+    const beforeFen=game.fen();
+    const played=game.move({from:chosen.from,to:chosen.to,promotion:"q"});
+    if(played){last=played;selected=null;legal=[];reviewMove(played,"b",beforeFen);checkMatchEnd()}
+   } catch(err) {
+    console.error("Computer move failed:",err);
+   } finally {
+    thinking=false;
+    render();
+   }
+  },levelDelay());
+ }
+ function levelDelay(){return $("difficulty").value==="hard"?550:300}
+ function newGame(){if(timer)clearInterval(timer);if(engineTimer)clearTimeout(engineTimer);if(engineBusy&&engineWorker){try{engineWorker.postMessage("stop")}catch(e){}}engineBusy=false;thinking=false;game.reset();selected=null;legal=[];last=null;capturedW=[];capturedB=[];reviewHistory=[];seconds=600;matchFinished=false;$("clock").textContent="10:00";$("resultTitle").textContent="Match in progress";$("resultReason").textContent="The game is still being played. The result explanation will appear here when it ends.";$("resultDetail").textContent="Win: +20 · Draw: +5 each · Loss: +0";renderReviews();render();startClock()}
+ function startClock(){if(timer)clearInterval(timer);timer=setInterval(()=>{if(!matchFinished&&!game.game_over()){seconds=Math.max(0,seconds-1);$("clock").textContent=Math.floor(seconds/60)+":"+String(seconds%60).padStart(2,"0");if(seconds===0){finishMatch("cpu","Your time ran out","Your 10-minute clock reached zero before you completed the game. The computer wins on time.");$("status").textContent="Time expired — computer wins"}}},1000)}
+ $("new").onclick=()=>onlineMode?onlineStatus("Leave the room before starting a computer game."):newGame();$("flip").onclick=()=>{flipped=!flipped;render()};
+ $("saveFirebase").onclick=()=>{try{const cfg=JSON.parse($("firebaseConfig").value);localStorage.setItem(FIREBASE_CONFIG_KEY,JSON.stringify(cfg));onlineStatus("Firebase config saved on this device.");}catch(e){onlineStatus("Please paste valid Firebase config JSON.");}};
+ $("createRoom").onclick=createOnlineRoom;$("joinRoom").onclick=joinOnlineRoom;$("leaveRoom").onclick=leaveOnlineRoom;loadFirebaseConfig();
+ $("undo").onclick=()=>{if(game.history().length&&!matchFinished){game.undo();if(game.turn()==="b")game.undo();reviewHistory=reviewHistory.slice(0,Math.max(0,reviewHistory.length-2));renderReviews();last=null;selected=null;legal=[];render()}};
+ $("hint").onclick=()=>{if(game.turn()!=="w"||game.game_over())return;const moves=game.moves({verbose:true});if(!moves.length)return;const m=moves.map(x=>({m:x,s:scoreMove(x)})).sort((a,b)=>b.s-a.s)[0].m;selected=m.from;legal=[m];render();$("substatus").textContent="Hint: "+m.san+" ("+m.from+" → "+m.to+")"};
+ renderProfile();
+ initPuzzles();
+ newGame();
+})();
+ </script>
+</body></html>
