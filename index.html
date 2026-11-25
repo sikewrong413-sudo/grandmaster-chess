@@ -29,7 +29,7 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
 <header><div class="brand">♛ GRANDMASTER <span>ARENA</span></div><div class="tag">THE BOARD IS YOURS</div></header>
 <main>
 <section class="panel">
- <div class="status"><div><div class="turn" id="status">White to move</div><div class="tag" id="substatus">Choose a piece to begin</div></div><div class="clock" id="clock">10:00</div></div>
+ <div class="status"><div><div class="turn" id="status">White to move</div><div class="tag" id="substatus">Choose a piece to begin</div></div><div style="display:flex;gap:6px;align-items:center"><div class="clock" id="clock">10:00</div><div class="clock" id="opponentClock" style="display:none"><small id="opponentClockLabel" style="display:block;font-size:9px;color:var(--muted)">BLACK</small><span id="opponentClockValue">10:00</span></div></div></div>
  <div class="board" id="board" aria-label="Chess board"></div>
  <div class="controls">
   <button class="btn primary" id="new">New game</button><button class="btn" id="undo">Undo</button><button class="btn" id="flip">Flip board</button><button class="btn" id="hint">Hint</button>
@@ -126,7 +126,7 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
  const game=new Chess();
  const glyph={w:{k:"♔",q:"♕",r:"♖",b:"♗",n:"♘",p:"♙"},b:{k:"♚",q:"♛",r:"♜",b:"♝",n:"♞",p:"♟"}};
  let selected=null, legal=[], flipped=false, last=null, seconds=600, timer=null, thinking=false, capturedW=[],capturedB=[],matchFinished=false,engineTimer=null,engineBusy=false,engineWorker=null,reviewHistory=[];
- let onlineMode=false,myOnlineColor=null,onlineRoomCode=null,onlineDb=null,onlineRoomRef=null,onlineUnsubscribe=null,onlineBusy=false,onlineLastFen="";
+ let onlineMode=false,myOnlineColor=null,onlineRoomCode=null,onlineDb=null,onlineRoomRef=null,onlineUnsubscribe=null,onlineBusy=false,onlineLastFen="",onlineClock={w:600000,b:600000,turn:"w",startedAt:0,started:false,finished:false,winner:null},clockSyncBusy=false;
  const files="abcdefgh";
  const PROFILE_KEY="grandmasterArenaProfileV1";
  const rankLevels=[
@@ -213,7 +213,7 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
   $("puzzleDailyLabel").textContent=(puzzleState.index===puzzleDateIndex()?"Today's challenge · ":"Challenge · ")+puzzle.title+" · "+(g.turn()==="w"?"White":"Black")+" to move";
   board.innerHTML="";
   const rows=puzzle.fen.split(" ")[0].split("/");
-    const pieces=[];
+   const pieces=[];
   rows.forEach((row,r)=>{let c=0;for(const ch of row){if(/[1-8]/.test(ch)){for(let n=0;n<Number(ch);n++)pieces.push({sq:"abcdefgh"[c]+(8-r),piece:""});c+=Number(ch)}else{pieces.push({sq:"abcdefgh"[c]+(8-r),piece:ch});c++}}});
   const legal=g.moves({verbose:true}),targets=puzzleState.selected?legal.filter(m=>m.from===puzzleState.selected).map(m=>m.to):[];
   for(let vr=0;vr<8;vr++)for(let vc=0;vc<8;vc++){
@@ -289,13 +289,13 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
   matchFinished=true;
   let youEarned=0,cpuEarned=0,title="";
   if(result==="you"){youEarned=20;totals.you+=20;totals.wins++;title="🏆 You win!";}
-  else if(result==="cpu"){cpuEarned=20;totals.cpu+=20;totals.losses++;title="Computer wins";}
+  else if(result==="cpu"){cpuEarned=20;totals.cpu+=20;totals.losses++;title=onlineMode?(myOnlineColor==="w"?"Black wins":"White wins"):"Computer wins";}
   else{youEarned=5;cpuEarned=5;totals.you+=5;totals.cpu+=5;totals.draws++;title="🤝 Draw";}
   saveTotals();updateScoreboard();
   const xpEarned=recordProfileMatch(result);
   $("resultTitle").textContent=title;
   $("resultReason").textContent=reason+". "+(explanation||"");
-  $("resultDetail").textContent="Points earned — You: +"+youEarned+" · Computer: +"+cpuEarned+" · Your XP: +"+xpEarned;
+  $("resultDetail").textContent="Points earned — You: +"+youEarned+" · "+(onlineMode?"Opponent":"Computer")+": +"+cpuEarned+" · Your XP: +"+xpEarned;
   if(timer)clearInterval(timer);
  }
  function drawExplanation(){
@@ -531,14 +531,14 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
    await Promise.race([connectFirebase(),new Promise((_,reject)=>setTimeout(()=>reject(new Error("Firebase connection timed out after 15 seconds. Check internet access, HTTPS hosting, and Firebase Authentication settings.")),15000))]);
    onlineRoomCode=String(Math.floor(100000+Math.random()*900000));
    onlineRoomRef=fbRef(firebaseDb,"rooms/"+onlineRoomCode);
-   game.reset();myOnlineColor="w";onlineMode=true;matchFinished=false;onlineLastFen=game.fen();
-   await fbSet(onlineRoomRef,{fen:game.fen(),pgn:"",status:"waiting",createdAt:Date.now(),whiteUid:firebaseAuth.currentUser.uid});
+   game.reset();myOnlineColor="w";onlineMode=true;matchFinished=false;onlineLastFen=game.fen();onlineClock={w:600000,b:600000,turn:"w",startedAt:0,started:false,finished:false,winner:null};
+   await fbSet(onlineRoomRef,{fen:game.fen(),pgn:"",status:"waiting",createdAt:Date.now(),whiteUid:firebaseAuth.currentUser.uid,clocks:onlineClock});
    subscribeOnlineRoom();
    $("roomCodeInput").value=onlineRoomCode;
    $("onlineRole").textContent="Room "+onlineRoomCode+" · You are White";$("modeLabel").textContent="vs Friend";$("difficulty").disabled=true;
    onlineStatus("Room created. Share the 6-digit code with your friend.");
    $("substatus").textContent="Waiting for a friend to join";
-   render();
+   renderOnlineClocks();render();
   }catch(e){console.error(e);onlineStatus("Could not create room: "+friendlyFirebaseError(e));}
  }
  async function joinOnlineRoom(){
@@ -555,12 +555,12 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
    if(data.status==="playing"&&data.blackUid){onlineStatus("Room is already full.");return;}
    if(data.whiteUid===firebaseAuth.currentUser.uid){onlineStatus("You created this room. Open it from another device/account to join.");return;}
    myOnlineColor="b";onlineMode=true;matchFinished=false;
-   await fbUpdate(onlineRoomRef,{blackUid:firebaseAuth.currentUser.uid,status:"playing"});
+   onlineClock=data.clocks||{w:600000,b:600000,turn:"w",startedAt:0,started:false,finished:false,winner:null};onlineClock.started=true;onlineClock.turn="w";onlineClock.startedAt=Date.now();await fbUpdate(onlineRoomRef,{blackUid:firebaseAuth.currentUser.uid,status:"playing",clocks:onlineClock});
    game.load(data.fen||new Chess().fen());onlineLastFen=game.fen();
    subscribeOnlineRoom();
    $("onlineRole").textContent="Room "+code+" · You are Black";$("modeLabel").textContent="vs Friend";$("difficulty").disabled=true;
-   onlineStatus("Connected. You play Black. Waiting for White's move.");
-   render();
+   onlineStatus("Connected. You play Black. White's clock starts now.");
+   renderOnlineClocks();render();
   }catch(e){console.error(e);onlineStatus("Could not join room: "+friendlyFirebaseError(e));}
  }
  function subscribeOnlineRoom(){
@@ -572,6 +572,7 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
     onlineLastFen=data.fen;
     try{game.load(data.fen);last=null;selected=null;legal=[];render();}catch(e){console.error("Invalid remote board state",e);}
    }
+   if(data.clocks){onlineClock=data.clocks;renderOnlineClocks();if(onlineClock.finished&&onlineClock.winner&&!matchFinished){const localWon=onlineClock.winner===myOnlineColor;finishMatch(localWon?"you":"cpu","Time expired",(onlineClock.winner==="w"?"White":"Black")+" wins on time.");$("status").textContent="Time expired — "+(onlineClock.winner==="w"?"White":"Black")+" wins";}}
    if(data.status==="playing")onlineStatus("Friend connected · "+(myOnlineColor==="w"?"You are White":"You are Black"));
    if(data.status==="finished")onlineStatus("Room match finished.");
   });
@@ -579,12 +580,35 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
  async function publishOnlineMove(){
   if(!onlineMode||!onlineRoomRef)return;
   onlineLastFen=game.fen();
-  await fbUpdate(onlineRoomRef,{fen:game.fen(),pgn:game.pgn(),lastMove:game.history().slice(-1)[0]||"",turn:game.turn(),status:game.game_over()?"finished":"playing",updatedAt:Date.now()});
+  const now=Date.now(), mover=myOnlineColor, next=game.turn();
+  let c=onlineClock||{w:600000,b:600000,turn:mover,startedAt:0,started:true,finished:false};
+  if(c.startedAt&&c.turn===mover)c[mover]=Math.max(0,(c[mover]||0)-(now-c.startedAt));
+  c.turn=next;c.started=true;c.startedAt=now;
+  if(c[mover]<=0){c.finished=true;c.winner=next;}
+  onlineClock=c;
+  await fbUpdate(onlineRoomRef,{fen:game.fen(),pgn:game.pgn(),lastMove:game.history().slice(-1)[0]||"",turn:game.turn(),status:game.game_over()?"finished":"playing",clocks:c,updatedAt:now});
+  renderOnlineClocks();
  }
+ function fmtClock(ms){ms=Math.max(0,ms|0);return Math.floor(ms/60000)+":"+String(Math.floor(ms/1000)%60).padStart(2,"0");}
+ function renderOnlineClocks(){
+  const opp=$("opponentClock"),own=$("clock");
+  if(!onlineMode){if(opp)opp.style.display="none";return;}
+  if(opp)opp.style.display="block";
+  const mine=myOnlineColor||"w",other=mine==="w"?"b":"w";
+  own.textContent=fmtClock(onlineClock[mine]);$("opponentClockValue").textContent=fmtClock(onlineClock[other]);
+  $("opponentClockLabel").textContent=other==="w"?"WHITE":"BLACK";
+ }
+ async function tickOnlineClock(){
+  if(!onlineMode||!onlineRoomRef||!onlineClock.started||onlineClock.finished||!onlineClock.startedAt)return;
+  const now=Date.now(),side=onlineClock.turn,remaining=(onlineClock[side]||0)-(now-onlineClock.startedAt);
+  renderOnlineClocks();
+  if(remaining<=0&&!clockSyncBusy){clockSyncBusy=true;try{const snap=await fbGet(onlineRoomRef);if(snap.exists()){const c=snap.val().clocks||onlineClock;if(!c.finished){c[side]=0;c.finished=true;c.winner=side==="w"?"b":"w";c.startedAt=0;await fbUpdate(onlineRoomRef,{clocks:c,status:"finished"});}}}catch(e){console.error(e)}finally{clockSyncBusy=false;}}
+ }
+
  function leaveOnlineRoom(){
   if(onlineUnsubscribe&&onlineRoomRef&&fbOff)fbOff(onlineRoomRef,"value",onlineUnsubscribe);
   onlineUnsubscribe=null;onlineRoomRef=null;onlineRoomCode=null;onlineMode=false;myOnlineColor=null;onlineLastFen="";
-  onlineStatus("Offline mode · vs computer");$("onlineRole").textContent="No room connected";$("modeLabel").textContent="vs CPU";$("difficulty").disabled=false;
+  onlineStatus("Offline mode · vs computer");$("opponentClock").style.display="none";$("onlineRole").textContent="No room connected";$("modeLabel").textContent="vs CPU";$("difficulty").disabled=false;
   newGame();
  }
 
@@ -619,7 +643,7 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
     else{
      const ranked=moves.map(m=>({m,s:scoreMove(m)+Math.random()*(level==="hard"?10:65)})).sort((a,b)=>b.s-a.s);
      chosen=ranked[Math.floor(Math.random()*(level==="hard"?Math.min(2,ranked.length):Math.min(4,ranked.length)))].m;
-    }
+     }
     const beforeFen=game.fen();
     const played=game.move({from:chosen.from,to:chosen.to,promotion:"q"});
     if(played){last=played;selected=null;legal=[];reviewMove(played,"b",beforeFen);checkMatchEnd()}
@@ -633,7 +657,7 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
  }
  function levelDelay(){return $("difficulty").value==="hard"?550:300}
  function newGame(){if(timer)clearInterval(timer);if(engineTimer)clearTimeout(engineTimer);if(engineBusy&&engineWorker){try{engineWorker.postMessage("stop")}catch(e){}}engineBusy=false;thinking=false;game.reset();selected=null;legal=[];last=null;capturedW=[];capturedB=[];reviewHistory=[];seconds=600;matchFinished=false;$("clock").textContent="10:00";$("resultTitle").textContent="Match in progress";$("resultReason").textContent="The game is still being played. The result explanation will appear here when it ends.";$("resultDetail").textContent="Win: +20 · Draw: +5 each · Loss: +0";renderReviews();render();startClock()}
- function startClock(){if(timer)clearInterval(timer);timer=setInterval(()=>{if(!matchFinished&&!game.game_over()){seconds=Math.max(0,seconds-1);$("clock").textContent=Math.floor(seconds/60)+":"+String(seconds%60).padStart(2,"0");if(seconds===0){finishMatch("cpu","Your time ran out","Your 10-minute clock reached zero before you completed the game. The computer wins on time.");$("status").textContent="Time expired — computer wins"}}},1000)}
+ function startClock(){if(timer)clearInterval(timer);timer=setInterval(()=>{if(onlineMode){tickOnlineClock();return;}if(!matchFinished&&!game.game_over()){seconds=Math.max(0,seconds-1);$("clock").textContent=Math.floor(seconds/60)+":"+String(seconds%60).padStart(2,"0");if(seconds===0){finishMatch("cpu","Your time ran out","Your 10-minute clock reached zero before you completed the game. The computer wins on time.");$("status").textContent="Time expired — computer wins"}}},250)}
  $("new").onclick=()=>onlineMode?onlineStatus("Leave the room before starting a computer game."):newGame();$("flip").onclick=()=>{flipped=!flipped;render()};
  $("saveFirebase").onclick=()=>{try{const cfg=JSON.parse($("firebaseConfig").value);localStorage.setItem(FIREBASE_CONFIG_KEY,JSON.stringify(cfg));onlineStatus("Firebase config saved on this device.");}catch(e){onlineStatus("Please paste valid Firebase config JSON.");}};
  $("createRoom").onclick=createOnlineRoom;$("joinRoom").onclick=joinOnlineRoom;$("leaveRoom").onclick=leaveOnlineRoom;loadFirebaseConfig();
@@ -643,5 +667,5 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
  initPuzzles();
  newGame();
 })();
- </script>
+</script>
 </body></html>
