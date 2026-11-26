@@ -10,7 +10,7 @@ header{padding:18px 20px;display:flex;justify-content:space-between;align-items:
 .brand{font-weight:900;letter-spacing:1.5px}.brand span{color:var(--gold)}.tag{color:var(--muted);font-size:12px}
 main{max-width:1120px;margin:24px auto;padding:0 16px;display:grid;grid-template-columns:minmax(280px,660px) minmax(260px,340px);gap:20px}
 .panel{background:linear-gradient(145deg,#202a3b,#171e2b);border:1px solid #ffffff18;border-radius:18px;padding:16px;box-shadow:0 18px 50px #0005}
-.status{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px}.turn{font-weight:800}.clock{font-variant-numeric:tabular-nums;background:#0d121b;padding:9px 14px;border-radius:10px;font-size:20px;font-weight:800}
+.status{display:flex;flex-direction:column;align-items:stretch;margin-bottom:12px;gap:9px}.turn{font-weight:800}.clock-pair{display:flex;justify-content:space-between;gap:8px;align-items:center;width:100%}.clock{font-variant-numeric:tabular-nums;background:#0d121b;padding:7px 12px;border-radius:10px;font-size:19px;font-weight:800;min-width:76px;text-align:center}.clock small{display:block;font-size:9px;letter-spacing:.7px;color:var(--muted);margin-bottom:2px}
 .board{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));width:100%;aspect-ratio:1;border:5px solid #2b3546;border-radius:8px;overflow:hidden;box-shadow:0 14px 35px #0007}
 .square{border:0;position:relative;display:grid;place-items:center;padding:0;min-width:0;min-height:0;aspect-ratio:1;font-family:"Segoe UI Symbol",serif;font-size:clamp(26px,6.3vw,58px);cursor:pointer;line-height:1}
 .square.light{background:var(--light)}.square.dark{background:var(--dark)}
@@ -29,7 +29,7 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
 <header><div class="brand">♛ GRANDMASTER <span>ARENA</span></div><div class="tag">THE BOARD IS YOURS</div></header>
 <main>
 <section class="panel">
- <div class="status"><div><div class="turn" id="status">White to move</div><div class="tag" id="substatus">Choose a piece to begin</div></div><div style="display:flex;gap:6px;align-items:center"><div class="clock" id="clock">10:00</div><div class="clock" id="opponentClock" style="display:none"><small id="opponentClockLabel" style="display:block;font-size:9px;color:var(--muted)">BLACK</small><span id="opponentClockValue">10:00</span></div></div></div>
+ <div class="status"><div><div class="turn" id="status">White to move</div><div class="tag" id="substatus">Choose a piece to begin</div></div><div class="clock-pair"><div class="clock" id="whiteClock"><small>WHITE</small><span id="whiteClockValue">10:00</span></div><div class="clock" id="blackClock"><small>BLACK</small><span id="blackClockValue">10:00</span></div></div></div>
  <div class="board" id="board" aria-label="Chess board"></div>
  <div class="controls">
   <button class="btn primary" id="new">New game</button><button class="btn" id="undo">Undo</button><button class="btn" id="flip">Flip board</button><button class="btn" id="hint">Hint</button>
@@ -50,7 +50,7 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
 
  <section class="panel">
   <div class="section-title">Opponent setup</div>
-  <label class="tag" for="difficulty">computer strength</label>
+  <label class="tag" for="difficulty" id="difficultyLabel">computer strength</label>
   <select id="difficulty" class="difficulty"><option value="easy">Rookie</option><option value="medium" selected>Club player</option><option value="hard">Challenger</option></select>
   <div class="statgrid"><div class="stat"><span class="tag">Your side</span><b>White</b></div><div class="stat"><span class="tag">Mode</span><b id="modeLabel">vs CPU</b></div></div>
  </section>
@@ -58,7 +58,7 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
   <div class="section-title">Match result & points</div>
   <div class="scoreline">
    <div class="scorebox"><span class="tag">You · White</span><strong id="youPoints">0</strong><span class="tag">total points</span></div>
-   <div class="scorebox"><span class="tag">Computer · Black</span><strong id="cpuPoints">0</strong><span class="tag">total points</span></div>
+   <div class="scorebox"><span class="tag" id="opponentScoreLabel">Computer · Black</span><strong id="cpuPoints">0</strong><span class="tag">total points</span></div>
   </div>
   <div class="result" id="resultBox">
    <b id="resultTitle">Match in progress</b>
@@ -211,9 +211,8 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
  function renderPuzzle(){
   const puzzle=currentPuzzle(),g=puzzleChess(),board=$("puzzleBoard");
   $("puzzleDailyLabel").textContent=(puzzleState.index===puzzleDateIndex()?"Today's challenge · ":"Challenge · ")+puzzle.title+" · "+(g.turn()==="w"?"White":"Black")+" to move";
-  board.innerHTML="";
-  const rows=puzzle.fen.split(" ")[0].split("/");
-   const pieces=[];
+  b
+    const pieces=[];
   rows.forEach((row,r)=>{let c=0;for(const ch of row){if(/[1-8]/.test(ch)){for(let n=0;n<Number(ch);n++)pieces.push({sq:"abcdefgh"[c]+(8-r),piece:""});c+=Number(ch)}else{pieces.push({sq:"abcdefgh"[c]+(8-r),piece:ch});c++}}});
   const legal=g.moves({verbose:true}),targets=puzzleState.selected?legal.filter(m=>m.from===puzzleState.selected).map(m=>m.to):[];
   for(let vr=0;vr<8;vr++)for(let vc=0;vc<8;vc++){
@@ -428,7 +427,7 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
    }else{
     grade=(pieceValues[move.captured]||0)>=(pieceValues[move.piece]||0)?"Good":"Good";
     kind="good";detail="You won their "+capturedName+" on "+move.to+". The coach found no immediate free recapture of your capturing piece.";
-    }
+       }
   }else if(move.flags&&move.flags.includes("k")||move.flags&&move.flags.includes("q")){
    grade="Good";kind="good";detail="You castled. Your king moves away from the centre and your rook joins the game.";
   }else{
@@ -535,7 +534,7 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
    await fbSet(onlineRoomRef,{fen:game.fen(),pgn:"",status:"waiting",createdAt:Date.now(),whiteUid:firebaseAuth.currentUser.uid,clocks:onlineClock});
    subscribeOnlineRoom();
    $("roomCodeInput").value=onlineRoomCode;
-   $("onlineRole").textContent="Room "+onlineRoomCode+" · You are White";$("modeLabel").textContent="vs Friend";$("difficulty").disabled=true;
+   $("onlineRole").textContent="Room "+onlineRoomCode+" · You are White";$("modeLabel").textContent="vs Opponent";$("opponentScoreLabel").textContent="Opponent · Black";$("difficultyLabel").textContent="online opponent";$("difficulty").disabled=true;
    onlineStatus("Room created. Share the 6-digit code with your friend.");
    $("substatus").textContent="Waiting for a friend to join";
    renderOnlineClocks();render();
@@ -558,7 +557,7 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
    onlineClock=data.clocks||{w:600000,b:600000,turn:"w",startedAt:0,started:false,finished:false,winner:null};onlineClock.started=true;onlineClock.turn="w";onlineClock.startedAt=Date.now();await fbUpdate(onlineRoomRef,{blackUid:firebaseAuth.currentUser.uid,status:"playing",clocks:onlineClock});
    game.load(data.fen||new Chess().fen());onlineLastFen=game.fen();
    subscribeOnlineRoom();
-   $("onlineRole").textContent="Room "+code+" · You are Black";$("modeLabel").textContent="vs Friend";$("difficulty").disabled=true;
+   $("onlineRole").textContent="Room "+code+" · You are Black";$("modeLabel").textContent="vs Opponent";$("opponentScoreLabel").textContent="Opponent · White";$("difficultyLabel").textContent="online opponent";$("difficulty").disabled=true;
    onlineStatus("Connected. You play Black. White's clock starts now.");
    renderOnlineClocks();render();
   }catch(e){console.error(e);onlineStatus("Could not join room: "+friendlyFirebaseError(e));}
@@ -591,12 +590,10 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
  }
  function fmtClock(ms){ms=Math.max(0,ms|0);return Math.floor(ms/60000)+":"+String(Math.floor(ms/1000)%60).padStart(2,"0");}
  function renderOnlineClocks(){
-  const opp=$("opponentClock"),own=$("clock");
-  if(!onlineMode){if(opp)opp.style.display="none";return;}
-  if(opp)opp.style.display="block";
-  const mine=myOnlineColor||"w",other=mine==="w"?"b":"w";
-  own.textContent=fmtClock(onlineClock[mine]);$("opponentClockValue").textContent=fmtClock(onlineClock[other]);
-  $("opponentClockLabel").textContent=other==="w"?"WHITE":"BLACK";
+  const w=onlineClock.w??600000,b=onlineClock.b??600000;
+  $("whiteClockValue").textContent=fmtClock(w);$("blackClockValue").textContent=fmtClock(b);
+  $("whiteClock").style.outline=onlineClock.turn==="w"&&onlineClock.started&&!onlineClock.finished?"2px solid var(--gold)":"none";
+  $("blackClock").style.outline=onlineClock.turn==="b"&&onlineClock.started&&!onlineClock.finished?"2px solid var(--gold)":"none";
  }
  async function tickOnlineClock(){
   if(!onlineMode||!onlineRoomRef||!onlineClock.started||onlineClock.finished||!onlineClock.startedAt)return;
@@ -608,7 +605,7 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
  function leaveOnlineRoom(){
   if(onlineUnsubscribe&&onlineRoomRef&&fbOff)fbOff(onlineRoomRef,"value",onlineUnsubscribe);
   onlineUnsubscribe=null;onlineRoomRef=null;onlineRoomCode=null;onlineMode=false;myOnlineColor=null;onlineLastFen="";
-  onlineStatus("Offline mode · vs computer");$("opponentClock").style.display="none";$("onlineRole").textContent="No room connected";$("modeLabel").textContent="vs CPU";$("difficulty").disabled=false;
+  onlineStatus("Offline mode · vs computer");$("onlineRole").textContent="No room connected";$("modeLabel").textContent="vs CPU";$("difficulty").disabled=false;$("difficultyLabel").textContent="computer strength";$("opponentScoreLabel").textContent="Computer · Black";
   newGame();
  }
 
@@ -643,9 +640,9 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
     else{
      const ranked=moves.map(m=>({m,s:scoreMove(m)+Math.random()*(level==="hard"?10:65)})).sort((a,b)=>b.s-a.s);
      chosen=ranked[Math.floor(Math.random()*(level==="hard"?Math.min(2,ranked.length):Math.min(4,ranked.length)))].m;
-     }
+    }
     const beforeFen=game.fen();
-    const played=game.move({from:chosen.from,to:chosen.to,promotion:"q"});
+     const played=game.move({from:chosen.from,to:chosen.to,promotion:"q"});
     if(played){last=played;selected=null;legal=[];reviewMove(played,"b",beforeFen);checkMatchEnd()}
    } catch(err) {
     console.error("Computer move failed:",err);
@@ -656,8 +653,8 @@ footer{text-align:center;color:#78869a;font-size:12px;padding:16px}
   },levelDelay());
  }
  function levelDelay(){return $("difficulty").value==="hard"?550:300}
- function newGame(){if(timer)clearInterval(timer);if(engineTimer)clearTimeout(engineTimer);if(engineBusy&&engineWorker){try{engineWorker.postMessage("stop")}catch(e){}}engineBusy=false;thinking=false;game.reset();selected=null;legal=[];last=null;capturedW=[];capturedB=[];reviewHistory=[];seconds=600;matchFinished=false;$("clock").textContent="10:00";$("resultTitle").textContent="Match in progress";$("resultReason").textContent="The game is still being played. The result explanation will appear here when it ends.";$("resultDetail").textContent="Win: +20 · Draw: +5 each · Loss: +0";renderReviews();render();startClock()}
- function startClock(){if(timer)clearInterval(timer);timer=setInterval(()=>{if(onlineMode){tickOnlineClock();return;}if(!matchFinished&&!game.game_over()){seconds=Math.max(0,seconds-1);$("clock").textContent=Math.floor(seconds/60)+":"+String(seconds%60).padStart(2,"0");if(seconds===0){finishMatch("cpu","Your time ran out","Your 10-minute clock reached zero before you completed the game. The computer wins on time.");$("status").textContent="Time expired — computer wins"}}},250)}
+ function newGame(){if(timer)clearInterval(timer);if(engineTimer)clearTimeout(engineTimer);if(engineBusy&&engineWorker){try{engineWorker.postMessage("stop")}catch(e){}}engineBusy=false;thinking=false;game.reset();selected=null;legal=[];last=null;capturedW=[];capturedB=[];reviewHistory=[];seconds=600;matchFinished=false;$("whiteClockValue").textContent="10:00";$("blackClockValue").textContent="10:00";$("resultTitle").textContent="Match in progress";$("resultReason").textContent="The game is still being played. The result explanation will appear here when it ends.";$("resultDetail").textContent="Win: +20 · Draw: +5 each · Loss: +0";renderReviews();render();startClock()}
+ function startClock(){if(timer)clearInterval(timer);timer=setInterval(()=>{if(onlineMode){tickOnlineClock();return;}if(!matchFinished&&!game.game_over()){seconds=Math.max(0,seconds-1);$("whiteClockValue").textContent=Math.floor(seconds/60)+":"+String(seconds%60).padStart(2,"0");if(seconds===0){finishMatch("cpu","Your time ran out","Your 10-minute clock reached zero before you completed the game. The computer wins on time.");$("status").textContent="Time expired — computer wins"}}},250)}
  $("new").onclick=()=>onlineMode?onlineStatus("Leave the room before starting a computer game."):newGame();$("flip").onclick=()=>{flipped=!flipped;render()};
  $("saveFirebase").onclick=()=>{try{const cfg=JSON.parse($("firebaseConfig").value);localStorage.setItem(FIREBASE_CONFIG_KEY,JSON.stringify(cfg));onlineStatus("Firebase config saved on this device.");}catch(e){onlineStatus("Please paste valid Firebase config JSON.");}};
  $("createRoom").onclick=createOnlineRoom;$("joinRoom").onclick=joinOnlineRoom;$("leaveRoom").onclick=leaveOnlineRoom;loadFirebaseConfig();
